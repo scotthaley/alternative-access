@@ -1,12 +1,17 @@
 export enum SequenceType {
   Switch1Press,
   Switch1LongPress,
-  Switch1DoublePress
+  Switch1DoublePress,
+  Switch1TriplePress
 }
 
 export interface ISequenceCallback {
   type: SequenceType;
   callback: () => void
+}
+
+export interface ISequenceEngineSettings {
+  switch1: string;
 }
 
 interface IKeySequenceState {
@@ -20,13 +25,17 @@ export class SequenceEngine {
   keyMap: { [code: string]: number }
   keySequenceMap: { [code: string]: IKeySequenceState }
   enabled: boolean = false;
+  settings: ISequenceEngineSettings = {
+    switch1: 'Space'
+  }
 
   sequenceTime: number = 200;
 
-  constructor() {
+  constructor(settings: ISequenceEngineSettings) {
     this.callbacks = [];
     this.keyMap = {};
     this.keySequenceMap = {};
+    this.settings = settings;
 
     this.RegisterInternalCallbacks();
   }
@@ -39,10 +48,19 @@ export class SequenceEngine {
   }
 
   private RegisterInternalCallbacks() {
+    window.addEventListener('keypress', e => {
+      if (!this.enabled)
+        return;
+      if (e.code !== this.settings.switch1)
+        return;
+
+      e.preventDefault();
+      e.stopPropagation();
+    })
     window.addEventListener('keydown', e => {
       if (!this.enabled)
         return;
-      if (e.code !== 'Space')
+      if (e.code !== this.settings.switch1)
         return;
 
       e.preventDefault();
@@ -53,7 +71,7 @@ export class SequenceEngine {
     window.addEventListener('keyup', e => {
       if (!this.enabled)
         return;
-      if (e.code !== 'Space')
+      if (e.code !== this.settings.switch1)
         return;
 
       e.preventDefault();
@@ -83,7 +101,7 @@ export class SequenceEngine {
 
     console.log(seq);
 
-    if (code === 'Space') {
+    if (code === this.settings.switch1) {
       if (seq.length === 1) {
         if (seq[0] < 500)
           this.ExecuteCallbacks(SequenceType.Switch1Press);
@@ -92,6 +110,9 @@ export class SequenceEngine {
       }
       if (seq.length === 2) {
         this.ExecuteCallbacks(SequenceType.Switch1DoublePress);
+      }
+      if (seq.length === 3) {
+        this.ExecuteCallbacks(SequenceType.Switch1TriplePress);
       }
     }
 
