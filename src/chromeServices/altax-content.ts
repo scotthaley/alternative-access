@@ -10,7 +10,7 @@ const YouTubeProfile: IAltAxProfile = {
       modeId: 'select_video',
       type: ProfileSectionType.CYCLE,
       cycleSelector: 'ytd-rich-item-renderer',
-      urlFilter: /youtube.com$/
+      urlFilter: /youtube.com\/?$/
     },
     {
       selector: 'ytd-searchbox',

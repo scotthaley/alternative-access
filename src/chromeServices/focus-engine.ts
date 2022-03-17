@@ -77,7 +77,9 @@ export class FocusEngine {
   }
 
   public CycleEnter() {
-    this.currentCycleElem?.querySelector('a')?.click();
+    let url = this.currentCycleElem?.querySelector('a')?.href;
+    if (url)
+      window.location.href = url;
   }
 
   private static TryFocusSteal(): boolean {
