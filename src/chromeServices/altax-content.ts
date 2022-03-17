@@ -92,24 +92,40 @@ const focusEngine = new FocusEngine({
   ]
 });
 
+const enableEngine = () => {
+  ApplyProfile(YouTubeProfile);
+  focusEngine.FocusMode();
+  engine.enabled = true;
+  document.body.append(focusEngine.modeDisplayElement);
+}
+
+const disableEngine = () => {
+  engine.enabled = false;
+  document.body.removeChild(focusEngine.modeDisplayElement);
+}
+
 chrome.runtime.onMessage.addListener((msg: DOMMessage, sender, sendResponse) => {
   switch (msg.type) {
     case 'ENABLE':
-      ApplyProfile(YouTubeProfile);
-      focusEngine.FocusMode();
-      engine.enabled = true;
-      document.body.append(focusEngine.modeDisplayElement);
+      enableEngine();
       sendResponse(true);
+      chrome.runtime.sendMessage({type: 'ENABLE'} as DOMMessage)
       break;
     case 'DISABLE':
-      engine.enabled = false;
-      document.body.removeChild(focusEngine.modeDisplayElement);
+      disableEngine();
       sendResponse(false);
+      chrome.runtime.sendMessage({type: 'DISABLE'} as DOMMessage)
       break;
     case 'STATUS':
       sendResponse(engine.enabled);
       break;
   }
 })
+
+setTimeout(() => {
+  chrome.runtime.sendMessage({type: 'STATUS'} as DOMMessage, response => {
+    response ? enableEngine() : disableEngine();
+  })
+}, 1000)
 
 // chrome.runtime.sendMessage({type: 'ENTER'} as DOMMessage);

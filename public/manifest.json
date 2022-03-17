@@ -14,7 +14,7 @@
   },
   "permissions": [
     "activeTab",
-    "debugger"
+    "storage"
   ],
   "background": {
     "service_worker": "./static/js/background.js"

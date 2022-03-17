@@ -9,26 +9,27 @@ function App() {
   const [enabled, setEnabled] = React.useState(false);
   const [settingsVisible, setSettingsVisible] = React.useState(false);
 
-  const toggleExtension = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const enableEngine = () => {
+    chrome.tabs.sendMessage(
+      tabId,
+      {type: 'ENABLE'} as DOMMessage,
+      (response: boolean) => {
+        setEnabled(response);
+      })
+  };
+  const disableEngine = () => {
+    chrome.tabs.sendMessage(
+      tabId,
+      {type: 'DISABLE'} as DOMMessage,
+      (response: boolean) => {
+        setEnabled(response);
+      })
+  };
+
+  const toggleExtension = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!enabled) {
-      chrome.tabs.sendMessage(
-        tabId,
-        {type: 'ENABLE'} as DOMMessage,
-        (response: boolean) => {
-          setEnabled(response);
-        }
-      )
-    } else {
-      chrome.tabs.sendMessage(
-        tabId,
-        {type: 'DISABLE'} as DOMMessage,
-        (response: boolean) => {
-          setEnabled(response);
-        }
-      )
-    }
+    enabled ? disableEngine() : enableEngine();
   }
 
   React.useEffect(() => {
@@ -45,7 +46,6 @@ function App() {
         }
       )
     })
-
   })
 
   return (
