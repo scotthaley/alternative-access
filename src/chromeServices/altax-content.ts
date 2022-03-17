@@ -8,25 +8,29 @@ const YouTubeProfile: IAltAxProfile = {
     {
       selector: 'ytd-rich-grid-renderer',
       modeId: 'select_video',
+      modeName: 'Select Video',
       type: ProfileSectionType.CYCLE,
       cycleSelector: 'ytd-rich-item-renderer',
       urlFilter: /youtube.com\/?$/
     },
     {
-      selector: 'ytd-searchbox',
-      modeId: 'search',
-      type: ProfileSectionType.SEARCH
-    },
-    {
       selector: '#player',
       modeId: 'video',
+      modeName: 'Video',
       type: ProfileSectionType.INPUT_ONLY,
-      focusSelector: 'body',
+      focusSelector: '#alt-ax-focus-steal',
       urlFilter: /youtube.com\/watch/
+    },
+    {
+      selector: 'ytd-searchbox',
+      modeId: 'search',
+      modeName: 'Search',
+      type: ProfileSectionType.SEARCH
     },
     {
       selector: 'ytd-watch-next-secondary-results-renderer #contents.ytd-item-section-renderer',
       modeId: 'related_videos',
+      modeName: 'Related Videos',
       type: ProfileSectionType.CYCLE,
       cycleSelector: '.ytd-item-section-renderer',
       urlFilter: /youtube.com\/watch/
@@ -34,9 +38,11 @@ const YouTubeProfile: IAltAxProfile = {
   ]
 };
 
-const SimulateKeystroke = (keyCode: number) => {
-  document.dispatchEvent(new KeyboardEvent('keydown', {'keyCode': keyCode}))
-}
+// const SimulateKeystroke = (keyCode: number) => {
+//   document.dispatchEvent(new KeyboardEvent('keydown', {'keyCode': keyCode}))
+// }
+
+let video: HTMLVideoElement;
 
 const engine = new SequenceEngine({
   switch1: 'ArrowDown'
@@ -49,7 +55,8 @@ engine.RegisterCallback(SequenceType.Switch1Press, () => {
       focusEngine.CycleNext();
       break;
     case 'video':
-      SimulateKeystroke(32);
+      // SimulateKeystroke(32);
+      video.paused ? video.play() : video.pause();
       break;
   }
 });
@@ -61,7 +68,7 @@ engine.RegisterCallback(SequenceType.Switch1LongPress, () => {
       focusEngine.CyclePrevious();
       break;
     case 'video':
-      SimulateKeystroke(32);
+      // SimulateKeystroke(32);
       break;
   }
 });
@@ -74,7 +81,7 @@ engine.RegisterCallback(SequenceType.Switch1DoublePress, () => {
       focusEngine.SetMode('video');
       break;
     case 'video':
-      SimulateKeystroke(32);
+      // SimulateKeystroke(32);
       break;
   }
 });
@@ -83,16 +90,10 @@ engine.RegisterCallback(SequenceType.Switch1TriplePress, () => {
   focusEngine.CycleMode();
 });
 
-const focusEngine = new FocusEngine({
-  modes: [
-    {id: 'select_video', name: 'Select Video'},
-    {id: 'search', name: 'Search'},
-    {id: 'video', name: 'Video'},
-    {id: 'related_videos', name: 'Related Videos'}
-  ]
-});
+const focusEngine = new FocusEngine(YouTubeProfile);
 
 const enableEngine = () => {
+  document.body.append(focusEngine.focusSteal);
   ApplyProfile(YouTubeProfile);
   focusEngine.FocusMode();
   engine.enabled = true;
@@ -123,9 +124,9 @@ chrome.runtime.onMessage.addListener((msg: DOMMessage, sender, sendResponse) => 
 })
 
 setTimeout(() => {
+  video = document.getElementsByTagName('video')[0];
+
   chrome.runtime.sendMessage({type: 'STATUS'} as DOMMessage, response => {
     response ? enableEngine() : disableEngine();
   })
 }, 1000)
-
-// chrome.runtime.sendMessage({type: 'ENTER'} as DOMMessage);

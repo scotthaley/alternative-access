@@ -8,6 +8,7 @@ export interface IAltAxProfile {
   sections: {
     selector: string;
     modeId: string;
+    modeName: string;
     type: ProfileSectionType;
     cycleSelector?: string;
     focusSelector?: string;
@@ -38,6 +39,7 @@ export const ApplyProfile = (profile: IAltAxProfile) => {
           break;
         case ProfileSectionType.INPUT_ONLY:
           let elem = document.querySelector(section.focusSelector as string);
+          console.log('focus', elem);
           if (elem) {
             elem.setAttribute('alt-ax-focus', 'true');
           }
