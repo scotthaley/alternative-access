@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.scss';
-import {DOMMessage, DOMMessageResponse} from './types';
+import {DOMMessage } from './types';
 import {IoMdArrowBack, IoMdPower, IoMdSettings} from 'react-icons/io';
 import PopupSlide from './components/popup-slide/PopupSlide';
 

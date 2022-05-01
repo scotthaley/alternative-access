@@ -1,7 +1,8 @@
-import {IAltAxProfile} from './profile-applicator';
+import {IAltAxProfile, ProfileSectionType} from './profile-applicator';
 
 export class FocusEngine {
   currentMode: string = '';
+  currentModeType: ProfileSectionType | null = null;
   modeDisplayElement: HTMLElement;
   focusSteal: HTMLElement;
   profile: IAltAxProfile;
@@ -46,8 +47,15 @@ export class FocusEngine {
     this.modeDisplayElement.innerText = this.profile.sections.find(m => m.modeId === this.currentMode)?.modeName || '';
   }
 
-  public SetMode(mode: string) {
-    this.currentMode = mode;
+  public SetMode(modeType: ProfileSectionType) {
+
+    /* 
+    TODO: This isn't great. Only works for video mode, but is only being used to 
+    Change to video mode. Needs more thought.
+    */
+    this.currentModeType = modeType;
+    this.currentMode = this.profile.sections.find(s => s.type === this.currentModeType)?.modeName || '';
+    console.log('new mode is: ', this.currentMode, this.currentModeType);
     this.SetModeText();
     this.FocusMode();
   }
@@ -79,6 +87,7 @@ export class FocusEngine {
     } while (section.urlFilter && !window.location.href.match(section.urlFilter))
 
     this.currentMode = section.modeId;
+    this.currentModeType = section.type;
   }
 
   public FocusMode() {
