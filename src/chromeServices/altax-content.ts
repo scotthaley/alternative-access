@@ -17,7 +17,7 @@ const YouTubeProfile: IAltAxProfile = {
       selector: '#player',
       modeId: 'video',
       modeName: 'Video',
-      type: ProfileSectionType.INPUT_ONLY,
+      type: ProfileSectionType.VIDEO,
       focusSelector: '#alt-ax-focus-steal',
       urlFilter: /youtube.com\/watch/
     },
@@ -49,11 +49,11 @@ const engine = new SequenceEngine({
 });
 
 engine.RegisterCallback(SequenceType.Switch1Press, () => {
-  switch (focusEngine.currentModeType) {
+  switch (focusEngine.currentMode.type) {
     case ProfileSectionType.CYCLE:
       focusEngine.CycleNext();
       break;
-    case ProfileSectionType.INPUT_ONLY:
+    case ProfileSectionType.VIDEO:
       // SimulateKeystroke(32);\
       // TODO: has to be a better way to make this play
       // Does each profile have methods to be used?
@@ -63,23 +63,24 @@ engine.RegisterCallback(SequenceType.Switch1Press, () => {
 });
 
 engine.RegisterCallback(SequenceType.Switch1LongPress, () => {
-  switch (focusEngine.currentModeType) {
+  switch (focusEngine.currentMode.type) {
     case ProfileSectionType.CYCLE:
       focusEngine.CyclePrevious();
       break;
-    case ProfileSectionType.INPUT_ONLY:
+    case ProfileSectionType.VIDEO:
       // SimulateKeystroke(32);
+     
       break;
   }
 });
 
 engine.RegisterCallback(SequenceType.Switch1DoublePress, () => {
-  switch (focusEngine.currentModeType) {
+  switch (focusEngine.currentMode.type) {
     case ProfileSectionType.CYCLE:
       focusEngine.CycleEnter();
-      focusEngine.SetMode(ProfileSectionType.INPUT_ONLY);
       break;
-    case ProfileSectionType.INPUT_ONLY:
+    case ProfileSectionType.VIDEO:
+      video.volume = video.volume - .05;
       // SimulateKeystroke(32);
       break;
   }
