@@ -1,7 +1,15 @@
-import {IAltAxProfile} from './profile-applicator';
+import {IAltAxProfile, ProfileSectionType} from './profile-applicator';
+
+interface Mode {
+  name: string;
+  type: ProfileSectionType | null;
+}
 
 export class FocusEngine {
-  currentMode: string = '';
+  currentMode: Mode = {
+    name: '',
+    type: null
+  };
   modeDisplayElement: HTMLElement;
   focusSteal: HTMLElement;
   profile: IAltAxProfile;
@@ -38,17 +46,22 @@ export class FocusEngine {
     // this.focusSteal.style.left = '100%';
     this.focusSteal.appendChild(focusStealInput);
 
-    this.SetModeText();
-    this.FocusMode();
+    this.SetMode();
   }
 
-  private SetModeText() {
-    this.modeDisplayElement.innerText = this.profile.sections.find(m => m.modeId === this.currentMode)?.modeName || '';
-  }
+  public SetMode(modeType?: ProfileSectionType | null) {
+    this.modeDisplayElement.innerText = this.profile.sections.find(m => m.modeId === this.currentMode.name)?.modeName || '';
+    /* 
+    TODO: This isn't great. Only works for video mode, but is only being used to 
+    Change to video mode. Needs more thought.
+    */
+    if (!modeType) {
+      this.currentMode.type = this.profile.sections.find(s => s.modeId === this.currentMode.name)?.type ?? null;
+    } else {
+      this.currentMode.type = modeType;
+    }
 
-  public SetMode(mode: string) {
-    this.currentMode = mode;
-    this.SetModeText();
+    this.currentMode.name = this.profile.sections.find((s) => s.type === this.currentMode.type)?.modeId || '';
     this.FocusMode();
   }
 
@@ -57,9 +70,8 @@ export class FocusEngine {
       this.currentSection.style.border = this.currentSectionBorder || '';
     }
 
-    let i = this.profile.sections.findIndex(m => m.modeId === this.currentMode);
+    let i = this.profile.sections.findIndex(m => m.modeId === this.currentMode.name);
     this.SelectNextPossibleMode(i);
-    this.SetModeText();
     this.FocusMode();
   }
 
@@ -78,17 +90,18 @@ export class FocusEngine {
       section = this.profile.sections[i];
     } while (section.urlFilter && !window.location.href.match(section.urlFilter))
 
-    this.currentMode = section.modeId;
+    this.currentMode.name = section.modeId;
+    this.currentMode.type = section.type;
   }
 
   public FocusMode() {
-    this.currentSection = document.querySelector(`[alt-ax-section=${this.currentMode}]`) as HTMLElement;
+    this.currentSection = document.querySelector(`[alt-ax-section=${this.currentMode.name}]`) as HTMLElement;
     if (!this.currentSection) return;
 
     this.currentSectionBorder = this.currentSection.style.border;
     this.currentSection.style.border = '6px solid #FFD034';
 
-    const section = this.profile.sections.find(m => m.modeId === this.currentMode);
+    const section = this.profile.sections.find(m => m.modeId === this.currentMode.name);
     if (section && section.focusSelector) {
       setTimeout(() => {
         FocusEngine.TryFocusSteal()

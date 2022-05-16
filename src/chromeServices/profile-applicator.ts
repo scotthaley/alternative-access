@@ -1,7 +1,7 @@
 export enum ProfileSectionType {
   CYCLE,
   SEARCH,
-  INPUT_ONLY
+  VIDEO
 }
 
 export interface IAltAxProfile {
@@ -37,7 +37,7 @@ export const ApplyProfile = (profile: IAltAxProfile) => {
             })
           }
           break;
-        case ProfileSectionType.INPUT_ONLY:
+        case ProfileSectionType.VIDEO:
           let elem = document.querySelector(section.focusSelector as string);
           console.log('focus', elem);
           if (elem) {

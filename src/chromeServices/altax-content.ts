@@ -17,7 +17,7 @@ const YouTubeProfile: IAltAxProfile = {
       selector: '#player',
       modeId: 'video',
       modeName: 'Video',
-      type: ProfileSectionType.INPUT_ONLY,
+      type: ProfileSectionType.VIDEO,
       focusSelector: '#alt-ax-focus-steal',
       urlFilter: /youtube.com\/watch/
     },
@@ -49,38 +49,38 @@ const engine = new SequenceEngine({
 });
 
 engine.RegisterCallback(SequenceType.Switch1Press, () => {
-  switch (focusEngine.currentMode) {
-    case 'select_video':
-    case 'related_videos':
+  switch (focusEngine.currentMode.type) {
+    case ProfileSectionType.CYCLE:
       focusEngine.CycleNext();
       break;
-    case 'video':
-      // SimulateKeystroke(32);
+    case ProfileSectionType.VIDEO:
+      // SimulateKeystroke(32);\
+      // TODO: has to be a better way to make this play
+      // Does each profile have methods to be used?
       video.paused ? video.play() : video.pause();
       break;
   }
 });
 
 engine.RegisterCallback(SequenceType.Switch1LongPress, () => {
-  switch (focusEngine.currentMode) {
-    case 'select_video':
-    case 'related_videos':
+  switch (focusEngine.currentMode.type) {
+    case ProfileSectionType.CYCLE:
       focusEngine.CyclePrevious();
       break;
-    case 'video':
+    case ProfileSectionType.VIDEO:
       // SimulateKeystroke(32);
+     
       break;
   }
 });
 
 engine.RegisterCallback(SequenceType.Switch1DoublePress, () => {
-  switch (focusEngine.currentMode) {
-    case 'select_video':
-    case 'related_videos':
+  switch (focusEngine.currentMode.type) {
+    case ProfileSectionType.CYCLE:
       focusEngine.CycleEnter();
-      focusEngine.SetMode('video');
       break;
-    case 'video':
+    case ProfileSectionType.VIDEO:
+      video.volume = video.volume - .05;
       // SimulateKeystroke(32);
       break;
   }
@@ -125,7 +125,6 @@ chrome.runtime.onMessage.addListener((msg: DOMMessage, sender, sendResponse) => 
 
 setTimeout(() => {
   video = document.getElementsByTagName('video')[0];
-
   chrome.runtime.sendMessage({type: 'STATUS'} as DOMMessage, response => {
     response ? enableEngine() : disableEngine();
   })
