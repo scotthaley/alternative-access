@@ -1,42 +1,8 @@
 import {SequenceEngine, SequenceType} from './sequence-engine';
 import {DOMMessage} from '../types';
 import {FocusEngine} from './focus-engine';
-import {ApplyProfile, IAltAxProfile, ProfileSectionType} from './profile-applicator';
-
-const YouTubeProfile: IAltAxProfile = {
-  sections: [
-    {
-      selector: 'ytd-rich-grid-renderer',
-      modeId: 'select_video',
-      modeName: 'Select Video',
-      type: ProfileSectionType.CYCLE,
-      cycleSelector: 'ytd-rich-item-renderer',
-      urlFilter: /youtube.com\/?$/
-    },
-    {
-      selector: '#player',
-      modeId: 'video',
-      modeName: 'Video',
-      type: ProfileSectionType.VIDEO,
-      focusSelector: '#alt-ax-focus-steal',
-      urlFilter: /youtube.com\/watch/
-    },
-    {
-      selector: 'ytd-searchbox',
-      modeId: 'search',
-      modeName: 'Search',
-      type: ProfileSectionType.SEARCH
-    },
-    {
-      selector: 'ytd-watch-next-secondary-results-renderer #contents.ytd-item-section-renderer',
-      modeId: 'related_videos',
-      modeName: 'Related Videos',
-      type: ProfileSectionType.CYCLE,
-      cycleSelector: '.ytd-item-section-renderer',
-      urlFilter: /youtube.com\/watch/
-    }
-  ]
-};
+import {ApplyProfile, ProfileSectionType} from './profile-applicator';
+import { Profiles } from '../profiles/profiles';
 
 // const SimulateKeystroke = (keyCode: number) => {
 //   document.dispatchEvent(new KeyboardEvent('keydown', {'keyCode': keyCode}))
@@ -55,8 +21,6 @@ engine.RegisterCallback(SequenceType.Switch1Press, () => {
       break;
     case ProfileSectionType.VIDEO:
       // SimulateKeystroke(32);\
-      // TODO: has to be a better way to make this play
-      // Does each profile have methods to be used?
       video.paused ? video.play() : video.pause();
       break;
   }
@@ -90,11 +54,13 @@ engine.RegisterCallback(SequenceType.Switch1TriplePress, () => {
   focusEngine.CycleMode();
 });
 
-const focusEngine = new FocusEngine(YouTubeProfile);
+const url = window.location.href.replace(/(^\w+:|^)\/\//, '').split('/')[0];
+const profile = Profiles[url];
+const focusEngine = new FocusEngine(profile);
 
 const enableEngine = () => {
   document.body.append(focusEngine.focusSteal);
-  ApplyProfile(YouTubeProfile);
+  ApplyProfile(profile);
   focusEngine.FocusMode();
   engine.enabled = true;
   document.body.append(focusEngine.modeDisplayElement);
