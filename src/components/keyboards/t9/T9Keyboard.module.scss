@@ -1,0 +1,23 @@
+.container {
+  background-color: #3c3e48;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.textBox {
+  margin: 8px 32px;
+  padding: 8px;
+  border-bottom: #35d0ff 1px solid;
+  font-size: 32px;
+  color: white;
+  text-align: left;
+  height: 43px;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 16px 32px;
+}

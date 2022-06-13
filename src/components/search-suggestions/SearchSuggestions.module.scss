@@ -1,0 +1,14 @@
+.container {
+  background-color: #282c34;
+  padding: 16px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.pill {
+  display: inline-block;
+  background-color: #c5cde0;
+  color: #282c34;
+  padding: 4px;
+  border-radius: 4px;
+}

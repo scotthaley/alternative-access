@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.178",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "prettier": "^2.6.2"
   }
 }

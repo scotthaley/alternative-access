@@ -1,5 +1,5 @@
 import React from 'react';
-import './PopupSlide.scss';
+import './PopupSlide.module.scss';
 
 type PopupSlideProps = {
   visible?: boolean
