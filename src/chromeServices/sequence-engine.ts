@@ -40,6 +40,10 @@ export class SequenceEngine {
     this.RegisterInternalCallbacks();
   }
 
+  RemoveCallbacks() {
+    this.callbacks = [];
+  }
+
   RegisterCallback(type: SequenceType, callback: () => void) {
     this.callbacks.push({
       type,

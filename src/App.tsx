@@ -1,72 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.scss';
-import {DOMMessage } from './types';
-import {IoMdArrowBack, IoMdPower, IoMdSettings} from 'react-icons/io';
-import PopupSlide from './components/popup-slide/PopupSlide';
+import Home from "./pages/Home";
+import {BaseLocationHook, Route, Router} from "wouter";
+import Keyboard from "./pages/Keyboard";
 
 function App() {
-  const [tabId, setTabId] = React.useState(0);
-  const [enabled, setEnabled] = React.useState(false);
-  const [settingsVisible, setSettingsVisible] = React.useState(false);
-
-  const enableEngine = () => {
-    chrome.tabs.sendMessage(
-      tabId,
-      {type: 'ENABLE'} as DOMMessage,
-      (response: boolean) => {
-        setEnabled(response);
-      })
-  };
-  const disableEngine = () => {
-    chrome.tabs.sendMessage(
-      tabId,
-      {type: 'DISABLE'} as DOMMessage,
-      (response: boolean) => {
-        setEnabled(response);
-      })
+  const currentLocation = () => {
+    return window.location.hash.replace(/^#/, "") || "/";
   };
 
-  const toggleExtension = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const navigate = (to: string) => (window.location.hash = to);
 
-    enabled ? disableEngine() : enableEngine();
-  }
+  const useHashLocation: BaseLocationHook = () => {
+    const [loc, setLoc] = useState(currentLocation());
 
-  React.useEffect(() => {
-    chrome.tabs && chrome.tabs.query({
-      active: true,
-      currentWindow: true
-    }, tabs => {
-      setTabId(tabs[0].id || 0);
-      chrome.tabs.sendMessage(
-        tabs[0].id || 0,
-        {type: 'STATUS'} as DOMMessage,
-        (response: boolean) => {
-          setEnabled(response)
-        }
-      )
-    })
-  })
+    useEffect(() => {
+      // this function is called whenever the hash changes
+      const handler = () => setLoc(currentLocation());
+
+      // subscribe to hash changes
+      window.addEventListener("hashchange", handler);
+      return () => window.removeEventListener("hashchange", handler);
+    }, []);
+
+    return [loc, navigate];
+  };
 
   return (
     <div className="App">
-      <PopupSlide visible={true}>
-        <header className="App-header">
-          <h1>ALT-Ax</h1>
-        </header>
-        <div className="tools">
-          <button onClick={toggleExtension} className={enabled ? 'selected' : ''}>
-            <IoMdPower/>
-          </button>
-          <button onClick={() => setSettingsVisible(true)}>
-            <IoMdSettings/>
-          </button>
-        </div>
-      </PopupSlide>
-      <PopupSlide visible={settingsVisible}>
-        <button className="back" onClick={() => setSettingsVisible(false)}><IoMdArrowBack/> Back</button>
-        <h2>Settings</h2>
-      </PopupSlide>
+      <Router hook={useHashLocation}>
+        <Route path="/" component={Home} />
+        <Route path="/kb" component={Keyboard} />
+      </Router>
     </div>
   );
 }

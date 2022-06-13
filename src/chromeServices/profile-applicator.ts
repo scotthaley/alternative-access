@@ -1,7 +1,7 @@
 export enum ProfileSectionType {
   CYCLE,
   SEARCH,
-  VIDEO
+  VIDEO,
 }
 
 export interface IAltAxProfile {
@@ -17,33 +17,34 @@ export interface IAltAxProfile {
 }
 
 export const ApplyProfile = (profile: IAltAxProfile) => {
-  profile.sections.forEach(section => {
+  profile.sections.forEach((section) => {
     if (section.urlFilter && !window.location.href.match(section.urlFilter))
       return;
 
     let s = document.querySelector(section.selector);
     if (s) {
-      s.setAttribute('alt-ax-section', section.modeId);
+      s.setAttribute("alt-ax-section", section.modeId);
 
       switch (section.type) {
         case ProfileSectionType.CYCLE:
           if (section.cycleSelector) {
             let cIndex = 0;
-            s.querySelectorAll(section.cycleSelector).forEach(c => {
-              if (window.getComputedStyle(c).display === 'none') return;
+            s.querySelectorAll(section.cycleSelector).forEach((c) => {
+              if (window.getComputedStyle(c).display === "none") return;
 
-              c.setAttribute('alt-ax-cycle', cIndex.toString());
+              c.setAttribute("alt-ax-cycle", cIndex.toString());
               cIndex++;
-            })
+            });
           }
           break;
         case ProfileSectionType.VIDEO:
           let elem = document.querySelector(section.focusSelector as string);
-          console.log('focus', elem);
+          console.log("focus", elem);
           if (elem) {
-            elem.setAttribute('alt-ax-focus', 'true');
+            elem.setAttribute("alt-ax-focus", "true");
           }
+          break;
       }
     }
-  })
+  });
 };
