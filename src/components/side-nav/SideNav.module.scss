@@ -1,0 +1,34 @@
+.container {
+  height: 100%;
+  width: 300px;
+  background-color: #3c3e48;
+  box-shadow: 5px 0 15px 0px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+  color: #f1f1f1;
+  padding: 32px;
+
+  h1 {
+    font-size: 32px;
+  }
+}
+
+.option {
+  padding: 16px;
+  font-size: 24px;
+  color: #a6a6a6;
+  text-align: right;
+  background-color: #353942;
+  transition: background-color 0.2s linear, color 0.2s linear;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1a1d23;
+  }
+
+  &.selected {
+    background-color: #282c34;
+    color: #35d0ff;
+  }
+}

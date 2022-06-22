@@ -1,7 +1,7 @@
 import React from "react";
-import { SequenceEngine } from "../chromeServices/sequence-engine";
-import SearchSuggestions from "../components/search-suggestions/SearchSuggestions";
-import T9Keyboard from "../components/keyboards/t9/T9Keyboard";
+import { SequenceEngine } from "../../chromeServices/sequence-engine";
+import SearchSuggestions from "../../components/search-suggestions/SearchSuggestions";
+import T9Keyboard from "../../components/keyboards/t9/T9Keyboard";
 
 const styles = {
   display: "flex",

@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import './App.scss';
-import Home from "./pages/Home";
-import {BaseLocationHook, Route, Router} from "wouter";
-import Keyboard from "./pages/Keyboard";
+import React, { useEffect, useState } from "react";
+import "./App.scss";
+import { BaseLocationHook, Route, Router } from "wouter";
+import Home from "./pages/Home/Home";
+import Keyboard from "./pages/Keyboard/Keyboard";
+import Config from "./pages/Config/Config";
 
 function App() {
   const currentLocation = () => {
@@ -31,6 +32,7 @@ function App() {
       <Router hook={useHashLocation}>
         <Route path="/" component={Home} />
         <Route path="/kb" component={Keyboard} />
+        <Route path="/config" component={Config} />
       </Router>
     </div>
   );

@@ -1,0 +1,20 @@
+.container {
+  border-radius: 16px;
+  background-color: #1a1d23;
+  min-height: 100px;
+  box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  margin-bottom: 64px;
+
+  .title {
+    padding: 16px 32px;
+    font-size: 20px;
+    color: #f1f1f1;
+    border-bottom: 1px solid #282c34;
+    text-align: left;
+  }
+}
+
+.content {
+  padding: 32px;
+  color: #f1f1f1;
+}

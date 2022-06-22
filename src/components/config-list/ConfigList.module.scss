@@ -1,0 +1,87 @@
+.container {
+  border: 2px solid #121318;
+  text-align: left;
+}
+
+.titleRow {
+  display: flex;
+  font-size: 24px;
+}
+
+.title {
+  padding: 4px 8px 8px;
+  font-size: 18px;
+  flex-grow: 1;
+}
+
+.titleButtons {
+  padding-right: 4px;
+
+  button {
+    background-color: transparent;
+    cursor: pointer;
+  }
+}
+
+.list {
+  background-color: #121318;
+  font-size: 18px;
+
+  .item {
+    display: flex;
+    border-top: 1px solid #1a1d23;
+
+    .name {
+      padding: 4px;
+      display: flex;
+      flex-grow: 1;
+
+      input {
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #f1f1f1;
+        font-size: 18px;
+        flex-grow: 1;
+        transition: border 0.1s linear;
+        padding: 4px;
+
+        &:hover {
+          border: 1px solid #282c34;
+        }
+      }
+    }
+
+    .dropdown {
+      padding: 8px;
+      background-color: #282c34;
+
+      select {
+        min-width: 200px;
+        background-color: transparent;
+        border: none;
+        color: #f1f1f1;
+        font-size: 18px;
+
+        option {
+          color: #282c34;
+        }
+      }
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      padding: 8px 32px;
+      font-size: 24px;
+      color: #696c7c;
+      transition: color 0.1s linear;
+
+      svg:hover {
+        transition: color 0.1s linear;
+        color: #f1f1f1;
+        cursor: pointer;
+      }
+    }
+  }
+}
