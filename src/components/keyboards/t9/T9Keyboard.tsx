@@ -10,9 +10,9 @@ import ButtonGrid, {
 } from "../../button-grid/ButtonGrid";
 
 type KeyboardProps = {
-  sequenceEngine?: SequenceEngine;
   onTextSend?: (text: string) => void;
   onBack?: () => void;
+  onTextChange: (text: string) => void;
 };
 
 const mainButtonList: IButtonList = {
@@ -53,15 +53,21 @@ enum KeyboardState {
 }
 
 const T9Keyboard: React.FC<KeyboardProps> = ({
-  sequenceEngine,
   onTextSend,
   onBack,
+  onTextChange,
 }) => {
   const [selectedButton, setSelectedButton] = useState(0);
   const [lastSelectedButton, setLastSelectedButton] = useState(0);
   const [state, setState] = useState(KeyboardState.Main);
   const [buttonList, setButtonList] = useState(mainButtonList);
   const [textInput, setTextInput] = useState("");
+
+  const sequenceEngine = new SequenceEngine({
+    switch1: "ArrowDown",
+  });
+
+  sequenceEngine.enabled = true;
 
   const changeButton = useCallback(
     (change) => {
@@ -100,11 +106,22 @@ const T9Keyboard: React.FC<KeyboardProps> = ({
     [setButtonList, setSelectedButton, setState]
   );
 
+  useEffect(() => {
+    onTextChange(textInput);
+  }, [textInput]);
+
   const backToMain = useCallback(() => {
     setButtonList(mainButtonList);
     setState(KeyboardState.Main);
     setSelectedButton(lastSelectedButton);
-  }, [setButtonList, setState, setSelectedButton, lastSelectedButton]);
+  }, [
+    setButtonList,
+    setState,
+    setSelectedButton,
+    lastSelectedButton,
+    textInput,
+    onTextChange,
+  ]);
 
   const buttonSelected = useCallback(() => {
     const button = ButtonListId(selectedButton, buttonList);
@@ -136,11 +153,12 @@ const T9Keyboard: React.FC<KeyboardProps> = ({
     buttonList,
     selectedButton,
     selectSpecific,
-    setButtonList,
     backToMain,
     setTextInput,
     setLastSelectedButton,
     onTextSend,
+    onTextChange,
+    onBack,
     textInput,
   ]);
 
@@ -155,7 +173,11 @@ const T9Keyboard: React.FC<KeyboardProps> = ({
     sequenceEngine?.RegisterCallback(SequenceType.Switch1DoublePress, () =>
       buttonSelected()
     );
-  }, [sequenceEngine, buttonSelected]);
+
+    return () => {
+      sequenceEngine.enabled = false;
+    };
+  }, [buttonSelected, changeButton, sequenceEngine]);
 
   return (
     <div className={styles.container}>
