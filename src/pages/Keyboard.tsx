@@ -10,6 +10,7 @@ const styles = {
 
 const Keyboard: React.FC = () => {
   const [suggestions, setSuggestions] = useState([]);
+  const [engine, setEngine] = useState("keyboard");
 
   const onTextSend = (text: string) => {
     window.parent.postMessage(`text|${text}`, "*");
@@ -35,13 +36,25 @@ const Keyboard: React.FC = () => {
       setSuggestions(trimmedSuggestions);
     }
   };
+
+  const enableEngine = (engine: string) => {
+    setEngine(engine);
+  };
+
   return (
     <div style={styles}>
-      <SearchSuggestions suggestions={suggestions} />
+      <SearchSuggestions
+        suggestions={suggestions}
+        onTextSend={onTextSend}
+        onBlur={enableEngine}
+        active={engine === "suggestions"}
+      />
       <T9Keyboard
         onTextSend={onTextSend}
         onBack={onBack}
         onTextChange={getSuggestions}
+        onBlur={enableEngine}
+        active={engine === "keyboard"}
       />
     </div>
   );

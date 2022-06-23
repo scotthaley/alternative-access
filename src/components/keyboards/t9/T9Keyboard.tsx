@@ -13,6 +13,8 @@ type KeyboardProps = {
   onTextSend?: (text: string) => void;
   onBack?: () => void;
   onTextChange: (text: string) => void;
+  onBlur: (engine: string) => void;
+  active: boolean;
 };
 
 const mainButtonList: IButtonList = {
@@ -56,6 +58,8 @@ const T9Keyboard: React.FC<KeyboardProps> = ({
   onTextSend,
   onBack,
   onTextChange,
+  onBlur,
+  active,
 }) => {
   const [selectedButton, setSelectedButton] = useState(0);
   const [lastSelectedButton, setLastSelectedButton] = useState(0);
@@ -67,8 +71,7 @@ const T9Keyboard: React.FC<KeyboardProps> = ({
     switch1: "ArrowDown",
   });
 
-  sequenceEngine.enabled = true;
-
+  sequenceEngine.enabled = active;
   const changeButton = useCallback(
     (change) => {
       const count = buttonList.rows.reduce(
@@ -173,7 +176,9 @@ const T9Keyboard: React.FC<KeyboardProps> = ({
     sequenceEngine?.RegisterCallback(SequenceType.Switch1DoublePress, () =>
       buttonSelected()
     );
-
+    sequenceEngine?.RegisterCallback(SequenceType.Switch1TriplePress, () => {
+      onBlur("suggestions");
+    });
     return () => {
       sequenceEngine.enabled = false;
     };

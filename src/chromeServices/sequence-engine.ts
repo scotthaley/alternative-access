@@ -29,7 +29,7 @@ export class SequenceEngine {
     switch1: "Space",
   };
 
-  sequenceTime: number = 200;
+  sequenceTime: number = 350;
 
   constructor(settings: ISequenceEngineSettings) {
     this.callbacks = [];
